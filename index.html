@@ -1,293 +1,1840 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>GBoS GEOAI | The Gambia Bird Migration Intelligence</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<style>
-:root{
-  --bg:#090d10;--panel:#11191d;--panel2:#151f24;--line:#26343a;
-  --text:#f4f6f4;--muted:#9ba9a9;--white:#f4ead2;--cyan:#35d5ce;
-  --gold:#ffbf4b;--pink:#ff729b;--violet:#a78bfa;--green:#75d69b;
-}
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
-body{overflow:hidden}
-.app{height:100vh;display:grid;grid-template-rows:66px 1fr 54px;gap:0}
-header{display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line);background:#0b1115;z-index:500}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{width:34px;height:34px;border:1px solid #48616a;border-radius:9px;display:grid;place-items:center;color:var(--cyan);font-size:19px}
-.brand h1{font-size:14px;letter-spacing:1.6px;margin:0;font-weight:800}
-.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.4px;margin-top:4px}
-.head-right{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:11px}
-.live{color:var(--green);border:1px solid #315b46;padding:7px 10px;border-radius:20px;letter-spacing:1px}
-main{min-height:0;display:grid;grid-template-columns:270px minmax(0,1fr) 300px;gap:10px;padding:10px}
-.panel{background:linear-gradient(160deg,var(--panel),#0e1519);border:1px solid var(--line);border-radius:10px;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#35464d transparent}
-.panel-inner{padding:15px}
-.section-title{font-size:10px;letter-spacing:1.7px;color:#8fa1a4;font-weight:800;margin:0 0 12px}
-.hero-title{font-size:23px;line-height:1.05;font-weight:850;letter-spacing:-.8px;margin:0 0 7px}
-.sub{color:var(--muted);font-size:11px;line-height:1.5}
-.rule{height:1px;background:var(--line);margin:15px 0}
-.control-label{display:flex;justify-content:space-between;color:#c8d1d0;font-size:11px;margin:12px 0 7px}
-select,button{font:inherit}
-select{width:100%;background:#0a1115;color:#e9efed;border:1px solid #31434a;padding:10px;border-radius:6px;outline:none}
-.btnrow{display:flex;gap:7px;margin-top:12px}
-button{background:#18262c;border:1px solid #3a515a;color:#eaf3f1;border-radius:6px;padding:9px 12px;cursor:pointer;font-size:11px}
-button.primary{background:#0d6868;border-color:#198b87}
-button:hover{filter:brightness(1.2)}
-.species{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #202c31;font-size:11px}
-.dot{width:10px;height:10px;border-radius:3px;flex:none;box-shadow:0 0 10px currentColor}
-.species small{display:block;color:var(--muted);font-size:9px;margin-top:3px}
-.note{font-size:10px;color:#9ba9a9;line-height:1.55;background:#101b20;border:1px solid #27373d;padding:10px;border-radius:7px}
-.map-wrap{position:relative;min-height:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#11191c}
-#map{height:100%;width:100%;background:#11191c}
-.map-top{position:absolute;z-index:450;top:14px;left:15px;pointer-events:none}
-.map-top h2{font-size:clamp(25px,3vw,42px);letter-spacing:-1.5px;margin:0;text-shadow:0 2px 18px #000}
-.map-top p{font-size:10px;letter-spacing:2px;color:#c0ccca;margin:6px 0 0;text-shadow:0 1px 5px #000}
-.map-chip{position:absolute;z-index:450;right:14px;top:14px;background:#0b1418d9;border:1px solid #3b4a4e;padding:9px 12px;border-radius:7px;font-size:10px;color:#c9d5d2;pointer-events:none}
-.map-legend{position:absolute;z-index:450;left:15px;bottom:15px;background:#0a1114e8;border:1px solid #344249;border-radius:8px;padding:10px 12px;max-width:230px;pointer-events:none}
-.map-legend b{font-size:9px;letter-spacing:1.3px}
-.map-legend div{font-size:10px;color:#cbd5d2;margin-top:7px;display:flex;gap:8px;align-items:center}
-.map-legend i{width:17px;height:3px;display:inline-block;border-radius:3px}
-.leaflet-container{font:11px Arial,sans-serif}
-.leaflet-control-attribution{background:#081014cc!important;color:#91a09f!important}
-.leaflet-control-layers{
- background:#0b1418ed!important;color:#e8efec!important;
- border:1px solid #3b4a4e!important;border-radius:8px!important;
- box-shadow:0 4px 18px #0008!important;padding:7px 9px!important;
-}
-.leaflet-control-layers-expanded{min-width:145px}
-.leaflet-control-layers-separator{border-top:1px solid #344249!important}
-.leaflet-control-layers label{font-size:11px;color:#e0e8e5;padding:3px 0}
-.leaflet-control-layers input{accent-color:#35d5ce}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-.leaflet-control-attribution a{color:#9bc9c7!important}
-.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#101a1f;color:#eaf0ed;border:1px solid #34474d}
-.leaflet-popup-content{font-size:11px;line-height:1.5}
-.leaflet-popup-content b{color:#fff}
-.site-icon{font-size:19px;filter:drop-shadow(0 1px 5px #000)}
-.right-kpi{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.kpi{background:#101a1f;border:1px solid #26383e;padding:11px;border-radius:7px}
-.kpi strong{font-size:21px;display:block;letter-spacing:-.5px}
-.kpi span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-.activity{height:7px;background:#243238;border-radius:10px;overflow:hidden;margin-top:8px}
-.activity span{height:100%;display:block;background:linear-gradient(90deg,var(--cyan),var(--gold));width:70%;border-radius:10px;transition:width .3s}
-.month-title{display:flex;align-items:baseline;justify-content:space-between;margin:5px 0 10px}
-.month-title strong{font-size:30px;letter-spacing:1px}
-.month-title span{font-size:10px;color:var(--muted)}
-input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer}
-.months{display:flex;justify-content:space-between;color:#91a09f;font-size:9px;margin-top:5px}
-.route-card{padding:10px 0;border-bottom:1px solid #243137}
-.route-card b{font-size:11px}
-.route-card p{font-size:10px;color:var(--muted);line-height:1.5;margin:5px 0 0}
-footer{border-top:1px solid var(--line);background:#0b1115;display:flex;align-items:center;justify-content:space-between;padding:0 20px;color:#879696;font-size:10px;gap:15px}
-footer strong{color:#dbe4e0}
-@media(max-width:1000px){main{grid-template-columns:230px minmax(0,1fr)}.right{display:none}}
-@media(max-width:700px){
- body{overflow:auto}.app{height:auto;min-height:100vh;grid-template-rows:60px auto 60px}
- main{display:flex;flex-direction:column;min-height:0}
- .map-wrap{height:65vh;min-height:440px;order:1}
- .left{order:2;max-height:none}.right{display:block;order:3;max-height:none}
- footer{flex-wrap:wrap;padding:10px 14px}
- header{padding:0 12px}.head-right .live{display:none}
+<title>GBoS GEOAI | Gambia Bird Migration Intelligence</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<style>
+:root {
+  --navy:#071827;
+  --navy2:#0b2338;
+  --panel:#102b42;
+  --panel2:#15364f;
+  --line:#29475e;
+  --text:#edf5fb;
+  --muted:#a8bdce;
+  --gold:#f4c45e;
+  --cyan:#53d5e8;
+  --green:#55c89b;
+  --red:#f27e7e;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--navy);
+  color:var(--text);
+}
+
+header {
+  min-height:76px;
+  padding:14px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  background:#061321;
+  border-bottom:1px solid var(--line);
+}
+
+.brand {
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+
+.brand-logo {
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#f4c45e,#53d5e8);
+  color:#071827;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.brand h1 {
+  font-size:19px;
+  margin:0;
+  letter-spacing:.5px;
+}
+
+.brand p {
+  margin:4px 0 0;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.header-right {
+  text-align:right;
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.header-right strong {
+  color:var(--gold);
+}
+
+.dashboard {
+  display:grid;
+  grid-template-columns:290px minmax(0,1fr) 310px;
+  gap:12px;
+  padding:12px;
+  min-height:calc(100vh - 76px);
+}
+
+.panel {
+  min-width:0;
+  background:var(--navy2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.panel-scroll {
+  height:100%;
+  max-height:calc(100vh - 100px);
+  overflow-y:auto;
+  padding:15px;
+  scrollbar-width:thin;
+  scrollbar-color:#41627b #102b42;
+}
+
+.panel-title {
+  font-size:13px;
+  font-weight:bold;
+  letter-spacing:1px;
+  color:var(--gold);
+  margin:0 0 12px;
+  text-transform:uppercase;
+}
+
+.section {
+  border-bottom:1px solid var(--line);
+  padding-bottom:14px;
+  margin-bottom:14px;
+}
+
+.section:last-child {
+  border-bottom:0;
+}
+
+.description {
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.65;
+}
+
+.small-label {
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:7px;
+}
+
+select,
+button {
+  width:100%;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:#0a1d2d;
+  color:var(--text);
+  font-size:12px;
+}
+
+select {
+  cursor:pointer;
+}
+
+button {
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover {
+  border-color:var(--gold);
+}
+
+button.primary {
+  background:var(--gold);
+  color:#102033;
+  border-color:var(--gold);
+}
+
+button.secondary {
+  background:#173c56;
+}
+
+.button-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:9px;
+}
+
+.check-row {
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  margin:10px 0;
+  font-size:12px;
+  color:var(--text);
+  line-height:1.4;
+}
+
+.check-row input {
+  accent-color:var(--gold);
+  margin-top:2px;
+}
+
+.species-dot {
+  width:10px;
+  height:10px;
+  min-width:10px;
+  border-radius:50%;
+  margin-top:3px;
+}
+
+#map {
+  width:100%;
+  height:calc(100vh - 100px);
+  min-height:540px;
+  border-radius:9px;
+  background:#0b2235;
+}
+
+.map-panel {
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:10px;
+  min-width:0;
+}
+
+.map-heading {
+  position:absolute;
+  z-index:500;
+  top:12px;
+  left:12px;
+  max-width:calc(100% - 24px);
+  padding:10px 13px;
+  border-radius:7px;
+  background:rgba(5,20,33,.92);
+  border:1px solid #36556c;
+  pointer-events:none;
+}
+
+.map-heading strong {
+  display:block;
+  font-size:13px;
+}
+
+.map-heading span {
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:4px;
+}
+
+.map-status {
+  position:absolute;
+  z-index:500;
+  left:12px;
+  bottom:14px;
+  padding:8px 11px;
+  border-radius:6px;
+  background:rgba(5,20,33,.92);
+  border:1px solid #36556c;
+  font-size:10px;
+  color:var(--muted);
+}
+
+.legend {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+
+.legend-item {
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:10px;
+  color:var(--muted);
+}
+
+.legend-line {
+  width:22px;
+  height:3px;
+  border-radius:4px;
+}
+
+.metric-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.metric {
+  padding:12px 10px;
+  background:#102d44;
+  border:1px solid var(--line);
+  border-radius:7px;
+}
+
+.metric strong {
+  display:block;
+  font-size:21px;
+  color:var(--gold);
+}
+
+.metric span {
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.site-list {
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.site-item {
+  padding:9px;
+  border-radius:6px;
+  background:#102d44;
+  border:1px solid var(--line);
+  font-size:11px;
+  cursor:pointer;
+}
+
+.site-item:hover {
+  border-color:var(--gold);
+}
+
+.site-item strong {
+  display:block;
+  margin-bottom:4px;
+}
+
+.site-item span {
+  color:var(--muted);
+  font-size:10px;
+}
+
+.month-control {
+  width:100%;
+  accent-color:var(--gold);
+}
+
+.month-label {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:9px;
+}
+
+.month-label strong {
+  color:var(--gold);
+  font-size:17px;
+}
+
+.month-label span {
+  font-size:10px;
+  color:var(--muted);
+}
+
+.source-link {
+  display:block;
+  color:#8bd9e8;
+  text-decoration:none;
+  font-size:11px;
+  margin:8px 0;
+  overflow-wrap:anywhere;
+}
+
+.source-link:hover {
+  text-decoration:underline;
+}
+
+.notice {
+  padding:11px;
+  background:#352d1a;
+  border:1px solid #7b6635;
+  border-radius:7px;
+  font-size:11px;
+  color:#f7df9f;
+  line-height:1.6;
+}
+
+.credit {
+  padding:12px;
+  background:#0b1d2d;
+  border-radius:7px;
+  border:1px solid var(--line);
+  font-size:11px;
+  line-height:1.7;
+  color:var(--muted);
+}
+
+.credit strong {
+  color:var(--gold);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background:#102b42;
+  color:#edf5fb;
+}
+
+.leaflet-popup-content {
+  font-size:12px;
+  line-height:1.5;
+}
+
+.waypoint-icon {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  color:#071827;
+  font-size:9px;
+  font-weight:bold;
+  border:2px solid white;
+}
+
+.site-icon {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:27px;
+  height:27px;
+  background:#f4c45e;
+  border:2px solid white;
+  border-radius:50%;
+  font-size:13px;
+  box-shadow:0 1px 7px #000;
+}
+
+.bird-icon {
+  font-size:24px;
+  text-shadow:0 1px 5px #000;
+}
+
+@media(max-width:1050px) {
+  .dashboard {
+    grid-template-columns:250px minmax(0,1fr);
+  }
+
+  .right-panel {
+    grid-column:1 / -1;
+  }
+
+  .right-panel .panel-scroll {
+    max-height:none;
+  }
+}
+
+@media(max-width:700px) {
+  header {
+    align-items:flex-start;
+  }
+
+  .header-right {
+    display:none;
+  }
+
+  .dashboard {
+    display:flex;
+    flex-direction:column;
+  }
+
+  .left-panel,
+  .right-panel {
+    width:100%;
+  }
+
+  .panel-scroll {
+    max-height:none;
+  }
+
+  #map {
+    height:65vh;
+    min-height:450px;
+  }
+
+  .map-panel {
+    order:2;
+  }
 }
 </style>
 </head>
+
 <body>
-<div class="app">
+
 <header>
- <div class="brand"><div class="logo">✦</div><div><h1>GBoS GEOAI <span style="color:#42d3ce">/</span> BIRD MIGRATION</h1><small>GIS / CARTOGRAPHY UNIT · THE GAMBIA</small></div></div>
- <div class="head-right"><span>WEST AFRICAN MIGRATION INTELLIGENCE</span><span class="live">● SEASONAL VIEW</span></div>
+  <div class="brand">
+    <div class="brand-logo">G</div>
+    <div>
+      <h1>GBoS GEOAI</h1>
+      <p>GAMBIA BIRD MIGRATION & FLYWAY INTELLIGENCE</p>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <strong>THE GAMBIA</strong><br>
+    GIS / Cartography Unit<br>
+    Research and educational use
+  </div>
 </header>
-<main>
- <aside class="panel left"><div class="panel-inner">
-  <p class="section-title">MIGRATION CONTROLS</p>
-  <h2 class="hero-title">Birds without<br>boundaries.</h2>
-  <p class="sub">Explore the seasonal importance of The Gambia for migratory birds moving between northern breeding areas and West African wintering habitats.</p>
-  <div class="rule"></div>
-  <div class="control-label"><label for="month">SELECT MONTH</label><span id="monthLabel">MARCH</span></div>
-  <input id="month" type="range" min="0" max="11" value="2">
-  <div class="months"><span>JAN</span><span>MAR</span><span>MAY</span><span>JUL</span><span>SEP</span><span>NOV</span><span>DEC</span></div>
-  <div class="btnrow"><button class="primary" id="play">▶ PLAY SEASON</button><button id="reset">RESET</button></div>
-  <div class="rule"></div>
-  <p class="section-title">SPECIES GROUPS</p>
-  <div id="speciesList">
-   <div class="species"><i class="dot" style="background:#f4ead2;color:#f4ead2"></i><div>White Stork<small>Palearctic migrant · occasional / passage</small></div></div>
-   <div class="species"><i class="dot" style="background:#35d5ce;color:#35d5ce"></i><div>Osprey<small>Raptor · migrant and winter visitor</small></div></div>
-   <div class="species"><i class="dot" style="background:#ffbf4b;color:#ffbf4b"></i><div>Sanderling<small>Coastal wader · winter visitor</small></div></div>
-   <div class="species"><i class="dot" style="background:#ff729b;color:#ff729b"></i><div>Black-tailed Godwit<small>Wader · migratory waterbird</small></div></div>
-   <div class="species"><i class="dot" style="background:#a78bfa;color:#a78bfa"></i><div>Lesser Black-backed Gull<small>Gull · winter visitor / passage</small></div></div>
-  </div>
-  <div class="rule"></div>
-  <p class="section-title">READ THE MAP</p>
-  <div class="note">Glowing lines are schematic flyway connections for education and visual exploration. They are not individual GPS tracks, live telemetry, or measured migration counts.</div>
- </div></aside>
 
- <section class="map-wrap">
-  <div id="map"></div>
-  <div class="map-top"><h2>THE GAMBIA</h2><p>WHERE THE FLYWAYS MEET · WEST AFRICA</p></div>
-  <div class="map-chip">EAST ATLANTIC FLYWAY REGION &nbsp;·&nbsp; SCHEMATIC</div>
-  <div class="map-legend"><b>SEASONAL MOVEMENT</b>
-   <div><i style="background:#f4ead2"></i> White Stork</div>
-   <div><i style="background:#35d5ce"></i> Osprey</div>
-   <div><i style="background:#ffbf4b"></i> Sanderling</div>
-   <div><i style="background:#ff729b"></i> Black-tailed Godwit</div>
-   <div><i style="background:#a78bfa"></i> Lesser Black-backed Gull</div>
-  </div>
- </section>
+<div class="dashboard">
 
- <aside class="panel right"><div class="panel-inner">
-  <p class="section-title">SEASONAL INTELLIGENCE</p>
-  <div class="month-title"><strong id="bigMonth">MAR</strong><span id="seasonText">LATE DRY SEASON</span></div>
-  <p class="sub" id="monthDescription">Migratory waterbirds remain present in coastal and inland wetlands before northward departure begins.</p>
-  <div class="rule"></div>
-  <div class="right-kpi">
-   <div class="kpi"><strong>Oct–Apr</strong><span>Main migrant season</span></div>
-   <div class="kpi"><strong>570+</strong><span>Recorded bird species*</span></div>
-   <div class="kpi"><strong>362</strong><span>Tanbi wetland species*</span></div>
-   <div class="kpi"><strong>259</strong><span>Tanji reserve species*</span></div>
-  </div>
-  <div class="rule"></div>
-  <p class="section-title">SEASONAL PRESENCE</p>
-  <div style="font-size:11px;display:flex;justify-content:space-between"><span id="presenceLabel">High seasonal relevance</span><b id="presenceValue">Wintering period</b></div>
-  <div class="activity"><span id="activityBar"></span></div>
-  <p class="sub" style="margin-top:8px">Qualitative seasonal guide only; not a live abundance estimate.</p>
-  <div class="rule"></div>
-  <p class="section-title">IMPORTANT BIRD AREAS & WETLANDS</p>
-  <div class="route-card"><b>Tanbi Wetland Complex</b><p>Extensive mangrove and estuarine habitats; an important stopping and feeding area for Palearctic migrants.</p></div>
-  <div class="route-card"><b>Tanji Bird Reserve & Bijol Islands</b><p>Coastal roosting and feeding habitat for gulls, terns, waders and pelicans.</p></div>
-  <div class="route-card"><b>Bao Bolong Wetland Reserve</b><p>Riverine and freshwater wetland habitats supporting diverse waterbirds.</p></div>
-  <div class="route-card"><b>Kotu Creek & Abuko</b><p>Accessible wetland and woodland habitats near the Greater Banjul Area.</p></div>
-  <div class="route-card"><b>Kiang West & River Gambia</b><p>Important inland mosaics of wetlands, mangroves and savanna habitats.</p></div>
-  <div class="rule"></div>
-  <p class="section-title">METHODOLOGY & DATA</p>
-  <p class="sub">The map combines reference locations with generalized seasonal flyway paths. Species are examples of migratory birds recorded in or associated with The Gambia. Replace schematic paths with vetted GPS tracks or occurrence records for quantitative analysis.</p>
-  <p class="sub" style="margin-top:9px">*Published site/species totals vary by checklist and source date. They are contextual figures, not monthly counts.</p>
- </div></aside>
-</main>
-<footer><span><strong>GBoS GEOAI</strong> · GIS / Cartography Unit · Produced by Ansu Singhateh</span><span>Educational & research visualization · Not a live tracking service</span><span>Sources: Gambia Environment Ministry · AEWA · African Bird Club</span></footer>
+  <!-- LEFT CONTROL PANEL -->
+  <aside class="panel left-panel">
+    <div class="panel-scroll">
+
+      <div class="section">
+        <h2 class="panel-title">Project overview</h2>
+
+        <p class="description">
+          An interactive geographic visualisation of selected
+          migratory bird species and their broad migration corridors
+          connecting Europe, North Africa, West Africa and The Gambia.
+        </p>
+
+        <p class="description">
+          Explore migration waypoints, bird habitats, seasonal
+          patterns and important wetland locations across The Gambia.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Migration season</h2>
+
+        <div class="month-label">
+          <span>Selected month</span>
+          <strong id="monthName">OCTOBER</strong>
+        </div>
+
+        <input
+          type="range"
+          min="1"
+          max="12"
+          value="10"
+          id="monthSlider"
+          class="month-control"
+        >
+
+        <div class="month-label">
+          <span>JAN</span>
+          <span>DEC</span>
+        </div>
+
+        <p id="seasonDescription" class="description">
+          Autumn arrival and movement into West African wintering
+          areas. Timing varies by species and individual bird.
+        </p>
+
+        <div class="button-grid">
+          <button class="primary" id="playButton">▶ Play season</button>
+          <button class="secondary" id="stopButton">■ Stop</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Species selection</h2>
+
+        <p class="description">
+          Select the species to display its illustrative migration
+          corridor and numbered intermediate waypoints.
+        </p>
+
+        <div id="speciesControls"></div>
+
+        <div class="button-grid">
+          <button class="secondary" id="selectAll">Select all</button>
+          <button class="secondary" id="clearAll">Clear all</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Map display</h2>
+
+        <label class="check-row">
+          <input type="checkbox" id="showWaypoints" checked>
+          Show all intermediate migration points
+        </label>
+
+        <label class="check-row">
+          <input type="checkbox" id="showSites" checked>
+          Show Gambian bird habitats
+        </label>
+
+        <label class="check-row">
+          <input type="checkbox" id="showRoutes" checked>
+          Show migration corridors
+        </label>
+
+        <label class="small-label" for="basemapSelect">
+          Select basemap
+        </label>
+
+        <select id="basemapSelect">
+          <option value="dark">Dark map</option>
+          <option value="light">Light map</option>
+          <option value="osm">OpenStreetMap</option>
+          <option value="satellite">Satellite imagery</option>
+          <option value="terrain">Terrain</option>
+          <option value="voyager">Voyager</option>
+        </select>
+
+        <div class="button-grid">
+          <button class="secondary" id="focusGambia">Focus The Gambia</button>
+          <button class="secondary" id="fitRoutes">View all routes</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Map legend</h2>
+        <div id="routeLegend" class="legend"></div>
+
+        <div class="legend" style="margin-top:13px">
+          <div class="legend-item">
+            <span class="site-icon" style="width:19px;height:19px;font-size:10px">●</span>
+            Gambian habitat
+          </div>
+          <div class="legend-item">
+            <span style="width:18px;height:18px;border-radius:50%;background:#fff;color:#071827;display:flex;align-items:center;justify-content:center;font-size:9px">1</span>
+            Route waypoint
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- CENTRAL MAP -->
+  <main class="map-panel">
+    <div class="map-heading">
+      <strong>THE GAMBIA & INTERNATIONAL MIGRATION CORRIDORS</strong>
+      <span>West Africa · Europe · North Africa · Atlantic Flyways</span>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="map-status" id="mapStatus">
+      Loading migration intelligence map...
+    </div>
+  </main>
+
+  <!-- RIGHT ANALYTICS PANEL -->
+  <aside class="panel right-panel">
+    <div class="panel-scroll">
+
+      <div class="section">
+        <h2 class="panel-title">Spatial overview</h2>
+
+        <div class="metric-grid">
+          <div class="metric">
+            <strong id="speciesCount">5</strong>
+            <span>Selected species</span>
+          </div>
+
+          <div class="metric">
+            <strong id="waypointCount">0</strong>
+            <span>Visible route points</span>
+          </div>
+
+          <div class="metric">
+            <strong id="siteCount">12</strong>
+            <span>Gambian habitat sites</span>
+          </div>
+
+          <div class="metric">
+            <strong>12</strong>
+            <span>Months represented</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Seasonal interpretation</h2>
+
+        <p id="seasonAnalysis" class="description">
+          The selected month represents a broad seasonal phase.
+          Actual migration dates vary by species, weather,
+          individual behaviour and habitat conditions.
+        </p>
+
+        <div class="notice">
+          The monthly slider is a seasonal illustration. It does
+          not represent observed bird counts or verified daily
+          migration positions.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Gambian bird habitats</h2>
+
+        <p class="description">
+          Select a location to zoom to its position and view
+          its habitat information.
+        </p>
+
+        <div id="siteList" class="site-list"></div>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Project description</h2>
+
+        <p class="description">
+          This application presents a spatial overview of selected
+          migratory bird species associated with West African
+          wintering areas, including wetlands and coastal habitats
+          in The Gambia.
+        </p>
+
+        <p class="description">
+          The map connects broad geographical stages of migration
+          from northern and western Europe through the Iberian
+          Peninsula, North Africa and the western Sahel towards
+          The Gambia.
+        </p>
+
+        <p class="description">
+          Gambian habitat locations include coastal reserves,
+          estuaries, mangrove wetlands, freshwater environments
+          and protected areas.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Methodology</h2>
+
+        <p class="description">
+          <strong>1. Species selection:</strong>
+          Five selected species are represented using published
+          information on their broad distribution and migration
+          ecology.
+        </p>
+
+        <p class="description">
+          <strong>2. Corridor representation:</strong>
+          Intermediate geographical points are connected to form
+          schematic migration corridors between broad source
+          regions and West African destinations.
+        </p>
+
+        <p class="description">
+          <strong>3. Habitat mapping:</strong>
+          Selected Gambian wetlands, protected areas, coastal
+          habitats and birding locations are displayed as
+          geographic reference points.
+        </p>
+
+        <p class="description">
+          <strong>4. Seasonal interpretation:</strong>
+          The monthly control illustrates broad seasonal phases
+          rather than measured migration observations.
+        </p>
+
+        <p class="description">
+          <strong>5. Visualisation:</strong>
+          Leaflet is used for interactive mapping, route display,
+          waypoint markers, habitat selection and basemap switching.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Data sources & references</h2>
+
+        <a class="source-link" target="_blank"
+        href="https://meccnar.gov.gm/information-protected-areas-gambia">
+          Ministry of Environment – Protected Areas of The Gambia
+        </a>
+
+        <a class="source-link" target="_blank"
+        href="https://www.birdguidesassociationthegambia.com/complete-bird-species-checklist-of-gambia/">
+          Bird Watchers' Association – Gambia Bird Checklist
+        </a>
+
+        <a class="source-link" target="_blank"
+        href="https://www.birdguidesassociationthegambia.com/faq/">
+          Bird Watchers' Association – Birding FAQ
+        </a>
+
+        <a class="source-link" target="_blank"
+        href="https://www.mocde.gov.gm/wp-content/uploads/2025/07/Coastal-Marine-Biodiversity-Assessment-of-The-Gambia.pdf">
+          Coastal and Marine Biodiversity Assessment of The Gambia
+        </a>
+
+        <a class="source-link" target="_blank"
+        href="https://app.limosa.online/en/checklist/gmb">
+          Limosa – Gambia Bird Checklist
+        </a>
+
+        <a class="source-link" target="_blank"
+        href="https://www.movebank.org/">
+          Movebank – Animal Tracking Data Repository
+        </a>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Data limitations</h2>
+
+        <div class="notice">
+          <strong>Important scientific qualification</strong><br><br>
+          The routes and intermediate points displayed in this
+          application are generalised illustrative corridors.
+          They are not GPS telemetry observations, verified
+          individual bird tracks, confirmed stopover records,
+          or measured migration paths.
+          <br><br>
+          The map does not currently load individual tracking
+          records from Movebank or another telemetry database.
+          Habitat markers are geographic reference locations
+          and do not imply that every selected species occurs
+          at every site.
+          <br><br>
+          The application should therefore be used for research
+          communication, education and spatial exploration,
+          not as a substitute for field observations or
+          species-specific tracking data.
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="panel-title">Project credits</h2>
+
+        <div class="credit">
+          <strong>GAMBIA BUREAU OF STATISTICS (GBoS)</strong><br>
+          GIS / Cartography Unit<br><br>
+
+          <strong>GBoS GEOAI</strong><br>
+          Bird Migration & Flyway Intelligence<br><br>
+
+          Produced by: <strong>Ansu Singhateh</strong><br>
+          GIS Analyst<br>
+          GIS / Cartography Unit<br><br>
+
+          <strong>Purpose:</strong><br>
+          Research, educational and spatial visualisation use.
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
 </div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
-const map=L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView([13.35,-15.1],5);
 
-// SWITCHABLE BASEMAPS
-const baseMaps = {
- 'Dark (default)': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
-   attribution:'© OpenStreetMap contributors · © CARTO',subdomains:'abcd',maxZoom:19
- }),
- 'Light': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-   attribution:'© OpenStreetMap contributors · © CARTO',subdomains:'abcd',maxZoom:19
- }),
- 'OpenStreetMap': L.tileLayer('https://{tile}.openstreetmap.org/{z}/{x}/{y}.png',{
-   attribution:'© OpenStreetMap contributors',maxZoom:19
- }),
- 'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
-   attribution:'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',maxZoom:19
- }),
- 'Terrain': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{
-   attribution:'© OpenStreetMap contributors, SRTM | © OpenTopoMap',subdomains:'abc',maxZoom:17
- }),
- 'Voyager': L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-   attribution:'© OpenStreetMap contributors · © CARTO',subdomains:'abcd',maxZoom:19
- })
+// ============================================================
+// 1. MAP INITIALISATION
+// ============================================================
+
+const map = L.map("map", {
+  zoomControl:true,
+  preferCanvas:true
+}).setView([16.0,-15.8],4);
+
+const basemaps = {
+
+  dark: L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    {
+      attribution:"© OpenStreetMap © CARTO",
+      subdomains:"abcd",
+      maxZoom:20
+    }
+  ),
+
+  light: L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    {
+      attribution:"© OpenStreetMap © CARTO",
+      subdomains:"abcd",
+      maxZoom:20
+    }
+  ),
+
+  osm: L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      attribution:"© OpenStreetMap contributors",
+      maxZoom:19
+    }
+  ),
+
+  satellite: L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution:"Tiles © Esri",
+      maxZoom:19
+    }
+  ),
+
+  terrain: L.tileLayer(
+    "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+    {
+      attribution:"© OpenTopoMap",
+      maxZoom:17
+    }
+  ),
+
+  voyager: L.tileLayer(
+    "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    {
+      attribution:"© OpenStreetMap © CARTO",
+      subdomains:"abcd",
+      maxZoom:20
+    }
+  )
+
 };
-baseMaps['Dark (default)'].addTo(map);
 
-// Leaflet layer switcher: select any available basemap without removing map overlays.
-L.control.layers(baseMaps, null, {
- position:'topright',
- collapsed:false,
- sortLayers:false
-}).addTo(map);
+let activeBasemap = basemaps.dark;
+activeBasemap.addTo(map);
 
-const sites=[
- {name:'Tanbi Wetland Complex',lat:13.42,lon:-16.62,desc:'Mangroves, tidal creeks and important migrant staging habitat.'},
- {name:'Tanji Bird Reserve',lat:13.37,lon:-16.79,desc:'Coastal reserve and roosting habitat near Bijol Islands.'},
- {name:'Bijol Islands',lat:13.32,lon:-16.82,desc:'Offshore islands used by gulls, terns, waders and pelicans.'},
- {name:'Kotu Creek',lat:13.45,lon:-16.72,desc:'Coastal creek and wetland birding area.'},
- {name:'Abuko Nature Reserve',lat:13.39,lon:-16.65,desc:'Woodland and freshwater habitats.'},
- {name:'Bao Bolong Wetland Reserve',lat:13.55,lon:-15.95,desc:'Extensive inland wetland and mangrove ecosystems.'},
- {name:'Kiang West National Park',lat:13.20,lon:-15.95,desc:'Riverine, mangrove and savanna habitats.'},
- {name:'River Gambia National Park',lat:13.55,lon:-14.90,desc:'River island and riparian habitats.'}
-];
-const siteIcon=L.divIcon({className:'',html:'<div class="site-icon">✦</div>',iconSize:[20,20],iconAnchor:[10,10]});
-sites.forEach(s=>L.marker([s.lat,s.lon],{icon:siteIcon}).addTo(map).bindPopup('<b>'+s.name+'</b><br>'+s.desc));
+document.getElementById("basemapSelect").addEventListener(
+  "change",
+  function() {
 
-const routes=[
- {name:'White Stork',color:'#f4ead2',coords:[[51.5,9.5],[44,2],[36,-5],[29,-9],[21,-14],[13.45,-16.6]]},
- {name:'Osprey',color:'#35d5ce',coords:[[57,8],[49,3],[42,-2],[34,-8],[25,-12],[13.42,-16.62]]},
- {name:'Sanderling',color:'#ffbf4b',coords:[[64,-8],[55,-10],[45,-12],[35,-14],[25,-15],[13.37,-16.79]]},
- {name:'Black-tailed Godwit',color:'#ff729b',coords:[[58,5],[49,0],[40,-6],[31,-11],[22,-15],[13.42,-16.62]]},
- {name:'Lesser Black-backed Gull',color:'#a78bfa',coords:[[60,-2],[52,-5],[44,-9],[35,-12],[25,-15],[13.32,-16.82]]}
-];
-const routeLayers=[];
-routes.forEach((r,i)=>{
- const line=L.polyline(r.coords,{color:r.color,weight:2.4,opacity:.62,dashArray:'5 8'}).addTo(map);
- const glow=L.polyline(r.coords,{color:r.color,weight:8,opacity:.10,lineCap:'round'}).addTo(map);
- routeLayers.push({line,glow});
- // A moving marker follows the schematic route; it is a visual animation, not a tracked bird.
- const marker=L.circleMarker(r.coords[0],{radius:4,color:r.color,fillColor:r.color,fillOpacity:1,weight:1}).addTo(map);
- routeLayers[i].marker=marker;
- routeLayers[i].coords=r.coords;
-});
-const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-const descriptions=[
- 'Northern winter visitors are present in coastal and inland wetlands; many migrants are feeding and resting.',
- 'Wintering waterbirds remain in The Gambia, using estuaries, mudflats and freshwater wetlands.',
- 'Migratory waterbirds remain present before northward movement gathers pace.',
- 'Many Palearctic migrants begin departing north; local and resident species remain across habitats.',
- 'Most Palearctic winter visitors have departed; the wet season approaches.',
- 'Rainy-season conditions begin to reshape wetland and woodland habitats.',
- 'Wet-season habitats support resident and intra-African movements; Palearctic winter visitors are generally absent.',
- 'Wet-season conditions continue; resident and regional bird movements dominate.',
- 'The seasonal transition begins as northern migrants prepare to move south.',
- 'Autumn migration brings returning Palearctic migrants into West African coastal and wetland habitats.',
- 'Migratory birds are arriving and dispersing through coastal and inland wetlands.',
- 'The northern wintering season is established, with migrants using feeding and roosting sites.'
-];
-const season=['WINTERING','WINTERING','LATE DRY SEASON','NORTHBOUND','WET SEASON','WET SEASON','WET SEASON','WET SEASON','SOUTHBOUND','ARRIVAL','ARRIVAL','WINTERING'];
-const activity=[88,90,82,62,28,18,14,15,28,62,82,90];
-const monthInput=document.getElementById('month');
-let timer=null;
-function updateMonth(){
- const m=Number(monthInput.value);
- document.getElementById('monthLabel').textContent=months[m];
- document.getElementById('bigMonth').textContent=months[m];
- document.getElementById('seasonText').textContent=season[m];
- document.getElementById('monthDescription').textContent=descriptions[m];
- document.getElementById('activityBar').style.width=activity[m]+'%';
- document.getElementById('presenceValue').textContent=activity[m]>75?'Wintering period':activity[m]>45?'Migration transition':'Mainly resident birds';
- document.getElementById('presenceLabel').textContent=activity[m]>75?'High seasonal relevance':activity[m]>45?'Moderate seasonal relevance':'Lower Palearctic presence';
+    map.removeLayer(activeBasemap);
+
+    activeBasemap = basemaps[this.value];
+
+    activeBasemap.addTo(map);
+  }
+);
+
+
+// ============================================================
+// 2. SPECIES MIGRATION DATA
+// Coordinates are [latitude, longitude].
+// All routes are schematic, not telemetry tracks.
+// ============================================================
+
+const speciesData = [
+
+{
+  id:"stork",
+  name:"White Stork",
+  scientific:"Ciconia ciconia",
+  colour:"#f2d28b",
+  icon:"🕊",
+  description:"A long-distance Palearctic migrant. The illustrative corridor passes through western Europe, Iberia and northwest Africa towards the Senegal River region and The Gambia.",
+  points:[
+    ["Northern Germany",53.55,10.00],
+    ["Central Germany",51.20,10.45],
+    ["Western France",47.20,-1.55],
+    ["Bordeaux, France",44.84,-0.58],
+    ["Northern Spain",43.26,-2.93],
+    ["Central Spain",40.42,-3.70],
+    ["Southern Spain",36.72,-4.42],
+    ["Strait of Gibraltar",35.96,-5.60],
+    ["Northern Morocco",35.17,-2.93],
+    ["Western Morocco",31.63,-8.00],
+    ["Western Sahara",24.20,-13.20],
+    ["Mauritania",18.08,-15.98],
+    ["Senegal River Valley",16.03,-16.50],
+    ["The Gambia",13.45,-16.58]
+  ]
+},
+
+{
+  id:"osprey",
+  name:"Osprey",
+  scientific:"Pandion haliaetus",
+  colour:"#53d5e8",
+  icon:"🦅",
+  description:"A fish-eating raptor with a broad migration distribution. The illustrated corridor connects northern Europe with coastal and riverine West African environments.",
+  points:[
+    ["Scandinavia",60.00,15.00],
+    ["Southern Sweden",56.05,12.70],
+    ["Denmark",55.68,12.57],
+    ["Netherlands",52.37,4.90],
+    ["Belgium",50.85,4.35],
+    ["Western France",47.20,-1.55],
+    ["Bay of Biscay",45.00,-5.00],
+    ["Northern Spain",43.26,-2.93],
+    ["Portugal",38.72,-9.14],
+    ["Morocco",34.02,-6.84],
+    ["Western Sahara",24.20,-13.20],
+    ["Mauritania",18.08,-15.98],
+    ["Senegal",14.69,-17.45],
+    ["Tanbi / River Gambia",13.42,-16.62]
+  ]
+},
+
+{
+  id:"sanderling",
+  name:"Sanderling",
+  scientific:"Calidris alba",
+  colour:"#f4c45e",
+  icon:"🐦",
+  description:"A shorebird associated with coastal habitats and long-distance movements. The illustrative corridor follows broad Atlantic coastal and western African stages.",
+  points:[
+    ["Arctic breeding region",68.00,-30.00],
+    ["Iceland",64.15,-21.94],
+    ["British Isles",54.00,-4.00],
+    ["English Channel",50.00,-2.00],
+    ["Atlantic France",46.50,-1.50],
+    ["Northern Portugal",41.15,-8.61],
+    ["Lisbon, Portugal",38.72,-9.14],
+    ["Southern Portugal",37.02,-7.93],
+    ["Morocco",34.02,-6.84],
+    ["Western Sahara",24.20,-13.20],
+    ["Mauritania",18.08,-15.98],
+    ["Senegal coast",14.69,-17.45],
+    ["Tanji / Bijol",13.35,-16.80]
+  ]
+},
+
+{
+  id:"godwit",
+  name:"Black-tailed Godwit",
+  scientific:"Limosa limosa",
+  colour:"#ef8fb3",
+  icon:"🐦",
+  description:"A wader associated with wetlands, floodplains and shallow-water habitats. This schematic corridor connects northern European wetland regions with the western Sahel.",
+  points:[
+    ["Northern Europe",55.75,12.57],
+    ["Netherlands",52.37,4.90],
+    ["Belgium",50.85,4.35],
+    ["Northern France",49.44,1.10],
+    ["Western France",47.20,-1.55],
+    ["Central Spain",40.42,-3.70],
+    ["Southern Spain",36.72,-4.42],
+    ["Morocco",34.02,-6.84],
+    ["Western Sahara",24.20,-13.20],
+    ["Mauritania",18.08,-15.98],
+    ["Senegal River Valley",16.03,-16.50],
+    ["Northern Gambia",13.55,-15.95]
+  ]
+},
+
+{
+  id:"gull",
+  name:"Lesser Black-backed Gull",
+  scientific:"Larus fuscus",
+  colour:"#b69af7",
+  icon:"🕊",
+  description:"A gull with a broad Palearctic distribution. The illustrative route represents a broad western European and Atlantic coastal corridor towards West Africa.",
+  points:[
+    ["Scandinavia",60.00,15.00],
+    ["Denmark",55.68,12.57],
+    ["North Sea",54.00,3.00],
+    ["Netherlands",52.37,4.90],
+    ["English Channel",50.00,-2.00],
+    ["Brittany, France",48.20,-4.50],
+    ["Bay of Biscay",45.00,-5.00],
+    ["Portugal",38.72,-9.14],
+    ["Southern Spain",36.72,-4.42],
+    ["Northern Morocco",35.17,-2.93],
+    ["Western Sahara",24.20,-13.20],
+    ["Mauritania",18.08,-15.98],
+    ["Senegal coast",14.69,-17.45],
+    ["Bijol Islands",13.32,-16.82]
+  ]
 }
-monthInput.addEventListener('input',updateMonth);
-document.getElementById('play').addEventListener('click',()=>{
- const btn=document.getElementById('play');
- if(timer){clearInterval(timer);timer=null;btn.textContent='▶ PLAY SEASON';return;}
- btn.textContent='Ⅱ PAUSE';
- timer=setInterval(()=>{monthInput.value=(Number(monthInput.value)+1)%12;updateMonth();},1200);
-});
-document.getElementById('reset').addEventListener('click',()=>{
- if(timer){clearInterval(timer);timer=null;}
- document.getElementById('play').textContent='▶ PLAY SEASON';
- monthInput.value=2;updateMonth();map.setView([13.35,-15.1],5);
-});
-updateMonth();
 
-// Animate small markers along the generalized route geometry.
-let phase=0;
-function interpolate(points,t){
- const n=points.length-1,scaled=t*n,i=Math.min(Math.floor(scaled),n-1),f=scaled-i;
- return [points[i][0]+(points[i+1][0]-points[i][0])*f,points[i][1]+(points[i+1][1]-points[i][1])*f];
+];
+
+
+// ============================================================
+// 3. GAMBIAN HABITAT LOCATIONS
+// ============================================================
+
+const habitatSites = [
+
+{
+  name:"Tanbi Wetland Complex",
+  lat:13.42,
+  lng:-16.62,
+  type:"Ramsar wetland",
+  description:"A major mangrove and wetland complex near the Greater Banjul Area. Important habitat for resident and migratory waterbirds."
+},
+
+{
+  name:"Tanji River Bird Reserve",
+  lat:13.37,
+  lng:-16.79,
+  type:"Coastal bird reserve",
+  description:"Coastal scrub, estuarine and marine habitats. A notable birding location on the Atlantic coast."
+},
+
+{
+  name:"Bijol Islands",
+  lat:13.32,
+  lng:-16.82,
+  type:"Coastal islands",
+  description:"Important coastal roosting and breeding habitat for selected seabirds, gulls and terns."
+},
+
+{
+  name:"Kotu Creek",
+  lat:13.45,
+  lng:-16.72,
+  type:"Estuarine wetland",
+  description:"A coastal wetland and birdwatching location in the Greater Banjul Area."
+},
+
+{
+  name:"Abuko Nature Reserve",
+  lat:13.39,
+  lng:-16.65,
+  type:"Forest and wetland reserve",
+  description:"A protected natural area with woodland, freshwater and wetland habitats."
+},
+
+{
+  name:"Bijilo Forest Park",
+  lat:13.43,
+  lng:-16.73,
+  type:"Coastal forest",
+  description:"A coastal forest environment supporting a range of resident bird species."
+},
+
+{
+  name:"Bao Bolong Wetland Reserve",
+  lat:13.55,
+  lng:-15.95,
+  type:"Wetland reserve",
+  description:"A large wetland landscape with tidal marshes, creeks and habitats used by waterbirds."
+},
+
+{
+  name:"Tendaba",
+  lat:13.43,
+  lng:-15.80,
+  type:"Riverine birding area",
+  description:"A River Gambia landscape associated with mangrove, riverine and wetland bird habitats."
+},
+
+{
+  name:"Kiang West National Park",
+  lat:13.20,
+  lng:-15.95,
+  type:"National park",
+  description:"A protected landscape with a range of terrestrial, riverine and wetland habitats."
+},
+
+{
+  name:"River Gambia National Park",
+  lat:13.55,
+  lng:-14.90,
+  type:"National park",
+  description:"A protected river landscape in the middle reaches of the River Gambia."
+},
+
+{
+  name:"Kartong Wetlands",
+  lat:13.08,
+  lng:-16.76,
+  type:"Coastal wetland",
+  description:"Wetland and coastal environments in the southern part of The Gambia."
+},
+
+{
+  name:"Allahein River Estuary",
+  lat:13.06,
+  lng:-16.75,
+  type:"River estuary",
+  description:"An estuarine environment close to the southern coastal border region."
 }
-setInterval(()=>{
- phase=(phase+.0025)%1;
- routeLayers.forEach((r,i)=>{
-   const offset=(phase+i*.17)%1;
-   r.marker.setLatLng(interpolate(r.coords,offset));
- });
-},60);
+
+];
+
+
+// ============================================================
+// 4. LAYER GROUPS
+// ============================================================
+
+const routeLayer = L.layerGroup().addTo(map);
+const waypointLayer = L.layerGroup().addTo(map);
+const habitatLayer = L.layerGroup().addTo(map);
+const animatedLayer = L.layerGroup().addTo(map);
+
+const speciesState = {};
+
+speciesData.forEach(s => {
+  speciesState[s.id] = true;
+});
+
+const routeObjects = {};
+let animationTimer = null;
+let currentMonth = 10;
+
+
+// ============================================================
+// 5. SPECIES CONTROLS
+// ============================================================
+
+const speciesControls =
+document.getElementById("speciesControls");
+
+speciesData.forEach(s => {
+
+  const label = document.createElement("label");
+  label.className = "check-row";
+
+  label.innerHTML = `
+    <input type="checkbox" checked data-species="${s.id}">
+    <span class="species-dot" style="background:${s.colour}"></span>
+    <span>
+      <strong>${s.name}</strong><br>
+      <span style="color:var(--muted);font-size:10px">
+        ${s.scientific}
+      </span>
+    </span>
+  `;
+
+  speciesControls.appendChild(label);
+
+  label.querySelector("input").addEventListener(
+    "change",
+    function() {
+
+      speciesState[s.id] = this.checked;
+
+      updateMap();
+    }
+  );
+
+});
+
+
+// ============================================================
+// 6. WAYPOINT AND ROUTE CREATION
+// ============================================================
+
+function waypointIcon(number, colour) {
+
+  return L.divIcon({
+    className:"",
+    html:`
+      <div class="waypoint-icon"
+      style="background:${colour}">
+        ${number}
+      </div>
+    `,
+    iconSize:[20,20],
+    iconAnchor:[10,10]
+  });
+
+}
+
+function createSpeciesLayers() {
+
+  speciesData.forEach(species => {
+
+    const coordinates = species.points.map(p => [p[1],p[2]]);
+
+    const line = L.polyline(coordinates,{
+      color:species.colour,
+      weight:3,
+      opacity:0.85,
+      dashArray:"9,7"
+    });
+
+    line.bindPopup(`
+      <strong>${species.name}</strong><br>
+      <em>${species.scientific}</em><br><br>
+      ${species.description}<br><br>
+      <strong>Route qualification:</strong>
+      Generalised illustrative corridor.
+    `);
+
+    const points = [];
+
+    species.points.forEach((p,index) => {
+
+      const marker = L.marker(
+        [p[1],p[2]],
+        {
+          icon:waypointIcon(index+1,species.colour)
+        }
+      );
+
+      marker.bindPopup(`
+        <strong>${species.name}</strong><br>
+        Waypoint ${index+1} of ${species.points.length}<br>
+        <strong>${p[0]}</strong><br>
+        Latitude: ${p[1]}<br>
+        Longitude: ${p[2]}<br><br>
+        <span style="color:#f4c45e">
+        Illustrative waypoint, not a recorded tracking fix.
+        </span>
+      `);
+
+      points.push(marker);
+
+    });
+
+    routeObjects[species.id] = {
+      line:line,
+      points:points,
+      coordinates:coordinates
+    };
+
+  });
+
+}
+
+createSpeciesLayers();
+
+
+// ============================================================
+// 7. HABITAT MARKERS
+// ============================================================
+
+const habitatMarkers = [];
+
+function createHabitatLayers() {
+
+  habitatSites.forEach(site => {
+
+    const icon = L.divIcon({
+      className:"",
+      html:`<div class="site-icon">●</div>`,
+      iconSize:[27,27],
+      iconAnchor:[13,13]
+    });
+
+    const marker = L.marker(
+      [site.lat,site.lng],
+      {icon:icon}
+    );
+
+    marker.bindPopup(`
+      <strong>${site.name}</strong><br>
+      <em>${site.type}</em><br><br>
+      ${site.description}<br><br>
+      Latitude: ${site.lat}<br>
+      Longitude: ${site.lng}
+    `);
+
+    habitatMarkers.push(marker);
+
+    habitatLayer.addLayer(marker);
+
+  });
+
+}
+
+createHabitatLayers();
+
+
+// ============================================================
+// 8. MAIN MAP UPDATE
+// ============================================================
+
+function updateMap() {
+
+  routeLayer.clearLayers();
+  waypointLayer.clearLayers();
+
+  let visibleSpecies = 0;
+  let visiblePoints = 0;
+
+  const showRoutes =
+  document.getElementById("showRoutes").checked;
+
+  const showWaypoints =
+  document.getElementById("showWaypoints").checked;
+
+  speciesData.forEach(species => {
+
+    if (!speciesState[species.id]) return;
+
+    visibleSpecies++;
+
+    const obj = routeObjects[species.id];
+
+    if (showRoutes) {
+      routeLayer.addLayer(obj.line);
+    }
+
+    if (showWaypoints) {
+
+      obj.points.forEach(marker => {
+        waypointLayer.addLayer(marker);
+        visiblePoints++;
+      });
+
+    }
+
+  });
+
+  document.getElementById("speciesCount").textContent =
+    visibleSpecies;
+
+  document.getElementById("waypointCount").textContent =
+    visiblePoints;
+
+  document.getElementById("mapStatus").textContent =
+    visibleSpecies + " species displayed · " +
+    visiblePoints + " intermediate points";
+
+  document.getElementById("siteCount").textContent =
+    document.getElementById("showSites").checked
+    ? habitatSites.length : 0;
+
+  updateLegend();
+
+  updateAnimation();
+
+}
+
+function updateLegend() {
+
+  const legend = document.getElementById("routeLegend");
+
+  legend.innerHTML = "";
+
+  speciesData.forEach(s => {
+
+    if (!speciesState[s.id]) return;
+
+    const item = document.createElement("div");
+    item.className = "legend-item";
+
+    item.innerHTML = `
+      <span class="legend-line"
+      style="background:${s.colour}"></span>
+      ${s.name}
+    `;
+
+    legend.appendChild(item);
+
+  });
+
+}
+
+
+// ============================================================
+// 9. MAP DISPLAY CHECKBOXES
+// ============================================================
+
+document.getElementById("showRoutes").addEventListener(
+  "change",updateMap
+);
+
+document.getElementById("showWaypoints").addEventListener(
+  "change",updateMap
+);
+
+document.getElementById("showSites").addEventListener(
+  "change",function() {
+
+    if (this.checked) {
+      habitatLayer.addTo(map);
+    } else {
+      map.removeLayer(habitatLayer);
+    }
+
+    document.getElementById("siteCount").textContent =
+      this.checked ? habitatSites.length : 0;
+
+  }
+);
+
+
+// ============================================================
+// 10. SELECT ALL / CLEAR ALL
+// ============================================================
+
+document.getElementById("selectAll").onclick = function() {
+
+  speciesData.forEach(s => {
+    speciesState[s.id] = true;
+  });
+
+  document.querySelectorAll("[data-species]").forEach(input => {
+    input.checked = true;
+  });
+
+  updateMap();
+
+};
+
+document.getElementById("clearAll").onclick = function() {
+
+  speciesData.forEach(s => {
+    speciesState[s.id] = false;
+  });
+
+  document.querySelectorAll("[data-species]").forEach(input => {
+    input.checked = false;
+  });
+
+  updateMap();
+
+};
+
+
+// ============================================================
+// 11. HABITAT LOCATION LIST
+// ============================================================
+
+const siteList = document.getElementById("siteList");
+
+habitatSites.forEach((site,index) => {
+
+  const item = document.createElement("div");
+  item.className = "site-item";
+
+  item.innerHTML = `
+    <strong>${index+1}. ${site.name}</strong>
+    <span>${site.type}</span>
+  `;
+
+  item.onclick = function() {
+
+    map.flyTo(
+      [site.lat,site.lng],
+      12,
+      {duration:1.3}
+    );
+
+    habitatMarkers[index].openPopup();
+
+  };
+
+  siteList.appendChild(item);
+
+});
+
+
+// ============================================================
+// 12. SEASONAL INFORMATION
+// ============================================================
+
+const months = [
+  "JANUARY","FEBRUARY","MARCH","APRIL",
+  "MAY","JUNE","JULY","AUGUST",
+  "SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"
+];
+
+const seasonalInfo = {
+
+  1:{
+    title:"January",
+    phase:"Core wintering period",
+    description:"Many Palearctic migrants are in West African wintering areas. Wetlands, estuaries and coastal habitats provide important feeding and resting environments."
+  },
+
+  2:{
+    title:"February",
+    phase:"Wintering period",
+    description:"Wintering birds may remain in West African habitats. Some species begin preparatory movements ahead of their northward migration."
+  },
+
+  3:{
+    title:"March",
+    phase:"Spring departure period",
+    description:"Northward migration becomes increasingly relevant for many Palearctic migrants. Departure timing differs between species and individuals."
+  },
+
+  4:{
+    title:"April",
+    phase:"Northward migration",
+    description:"Many Palearctic migrants move towards breeding areas in Europe and northern regions. Some species may still be present in West Africa."
+  },
+
+  5:{
+    title:"May",
+    phase:"Northern breeding season",
+    description:"Many Palearctic migrants have moved towards their northern breeding areas. Local resident and intra-African species remain important in Gambian habitats."
+  },
+
+  6:{
+    title:"June",
+    phase:"Breeding season",
+    description:"The northern breeding season is underway for many migratory species. Seasonal conditions and breeding ecology influence their distribution."
+  },
+
+  7:{
+    title:"July",
+    phase:"Breeding and post-breeding period",
+    description:"Breeding activity and post-breeding movements vary across species. This is a broad seasonal interpretation, not a measured migration record."
+  },
+
+  8:{
+    title:"August",
+    phase:"Early southward movements",
+    description:"Some species begin southward post-breeding movements. The timing of arrival in West Africa varies substantially."
+  },
+
+  9:{
+    title:"September",
+    phase:"Autumn migration",
+    description:"Southward movements become increasingly important. Birds may pass through European and North African staging environments."
+  },
+
+  10:{
+    title:"October",
+    phase:"Autumn arrival",
+    description:"Autumn arrival and movement into West African wintering areas. Timing varies by species and individual bird."
+  },
+
+  11:{
+    title:"November",
+    phase:"West African wintering arrival",
+    description:"Many migrants may have reached West African wintering areas. Coastal and inland wetlands are important habitats."
+  },
+
+  12:{
+    title:"December",
+    phase:"Wintering period",
+    description:"Many migratory birds are within their wintering range. The Gambia's wetlands and coastal environments provide important habitat."
+  }
+
+};
+
+function updateSeason(month) {
+
+  currentMonth = Number(month);
+
+  const data = seasonalInfo[currentMonth];
+
+  document.getElementById("monthName").textContent =
+    data.title.toUpperCase();
+
+  document.getElementById("seasonDescription").textContent =
+    data.description;
+
+  document.getElementById("seasonAnalysis").innerHTML =
+    "<strong>" + data.phase + "</strong><br><br>" +
+    data.description;
+
+  updateAnimation();
+
+}
+
+document.getElementById("monthSlider").addEventListener(
+  "input",
+  function() {
+    updateSeason(this.value);
+  }
+);
+
+
+// ============================================================
+// 13. ANIMATED MIGRATION INDICATORS
+// ============================================================
+
+function getSeasonProgress(month) {
+
+  // Broad illustrative seasonal position.
+  // It is not derived from observed tracking data.
+
+  if (month >= 9 && month <= 12) {
+    return (month - 9) / 4;
+  }
+
+  if (month >= 1 && month <= 4) {
+    return (month + 3) / 4;
+  }
+
+  return 0.5;
+
+}
+
+function interpolatePosition(coords,fraction) {
+
+  if (!coords || coords.length < 2) return null;
+
+  const position = Math.max(
+    0,
+    Math.min(0.9999,fraction)
+  );
+
+  const segment = position * (coords.length-1);
+
+  const index = Math.floor(segment);
+
+  const local = segment-index;
+
+  const a = coords[index];
+  const b = coords[Math.min(index+1,coords.length-1)];
+
+  return [
+    a[0] + (b[0]-a[0])*local,
+    a[1] + (b[1]-a[1])*local
+  ];
+
+}
+
+function updateAnimation() {
+
+  animatedLayer.clearLayers();
+
+  const showRoutes =
+    document.getElementById("showRoutes").checked;
+
+  if (!showRoutes) return;
+
+  const progress = getSeasonProgress(currentMonth);
+
+  speciesData.forEach(species => {
+
+    if (!speciesState[species.id]) return;
+
+    const coords =
+      routeObjects[species.id].coordinates;
+
+    const position =
+      interpolatePosition(coords,progress);
+
+    if (!position) return;
+
+    const marker = L.marker(position,{
+      icon:L.divIcon({
+        className:"",
+        html:`<div class="bird-icon">${species.icon}</div>`,
+        iconSize:[28,28],
+        iconAnchor:[14,14]
+      }),
+      interactive:true
+    });
+
+    marker.bindPopup(`
+      <strong>${species.name}</strong><br>
+      ${seasonalInfo[currentMonth].title}<br><br>
+      Illustrative seasonal position only.
+      Not an observed bird location.
+    `);
+
+    animatedLayer.addLayer(marker);
+
+  });
+
+}
+
+function stopAnimation() {
+
+  if (animationTimer) {
+    clearInterval(animationTimer);
+    animationTimer = null;
+  }
+
+  document.getElementById("playButton").textContent =
+    "▶ Play season";
+
+}
+
+document.getElementById("playButton").onclick = function() {
+
+  if (animationTimer) return;
+
+  this.textContent = "Playing...";
+
+  animationTimer = setInterval(function() {
+
+    let month = Number(
+      document.getElementById("monthSlider").value
+    );
+
+    month++;
+
+    if (month > 12) month = 1;
+
+    document.getElementById("monthSlider").value = month;
+
+    updateSeason(month);
+
+  },1800);
+
+};
+
+document.getElementById("stopButton").onclick = stopAnimation;
+
+
+// ============================================================
+// 14. MAP EXTENT CONTROLS
+// ============================================================
+
+document.getElementById("focusGambia").onclick = function() {
+
+  map.flyTo(
+    [13.45,-15.45],
+    8,
+    {duration:1.5}
+  );
+
+};
+
+document.getElementById("fitRoutes").onclick = function() {
+
+  const allCoords = [];
+
+  speciesData.forEach(s => {
+
+    if (!speciesState[s.id]) return;
+
+    s.points.forEach(p => {
+      allCoords.push([p[1],p[2]]);
+    });
+
+  });
+
+  if (allCoords.length) {
+
+    map.fitBounds(
+      L.latLngBounds(allCoords),
+      {padding:[40,40]}
+    );
+
+  }
+
+};
+
+
+// ============================================================
+// 15. INITIAL DISPLAY
+// ============================================================
+
+updateMap();
+
+updateSeason(10);
+
+habitatLayer.addTo(map);
+
+map.flyTo(
+  [16.0,-15.8],
+  4,
+  {duration:1}
+);
+
+document.getElementById("mapStatus").textContent =
+  "5 species · 66 illustrative route waypoints · 12 Gambian habitat locations";
+
 </script>
+
 </body>
 </html>
